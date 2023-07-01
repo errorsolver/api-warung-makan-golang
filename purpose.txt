@@ -1,0 +1,32 @@
+# Warung Makan API
+
+# FUNCTION
+* User
+- Create User
+- Delete User
+- Detail User
+
+* Product
+- Create Product
+- Delete Product
+- Detail Product
+
+* Transaction
+- Create Transaction
+- Delete Transaction
+- Detail Transaction
+
+* Transaction Detail
+- daily report
+- monthly report
+- all report
+
+# TABLE
+* Product
+- Id
+- Product Name
+- Price
+
+* Transaction
+- Id
+- Table Name
