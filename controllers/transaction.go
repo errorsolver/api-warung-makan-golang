@@ -8,16 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (ControllerCollection) GetTransactionDetails(c *gin.Context) {
-	var transactions []models.Transaction
-
-	models.DB.Find(&transactions)
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Success get all transactions",
-		"data":    transactions,
-	})
-}
-
 func (ControllerCollection) CreateTransactionDetails(c *gin.Context) {
 	tx := models.DB.Begin()
 
@@ -102,12 +92,63 @@ func (ControllerCollection) CreateTransactionDetails(c *gin.Context) {
 	}
 
 	tx.Commit()
-	c.JSON(http.StatusOK, gin.H{"message": "Transaction success"})
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Transaction success",
+		"data":    transactionDetail})
 }
 
-// func (ControllerCollection) GetAllTransactionTable(c *gin.Context) {
-// 	var transactionDetails []models.TransactionDetails
-// 	var transaction []models.Transaction
+// func (ControllerCollection) GetTransactionDetails(c *gin.Context) {
+// 	var transactions []models.Transaction
 
-// 	models.DB.Model(&transaction).Joins("full outer join TransactionDetails on TransactionDetails.ID")
+// 	models.DB.Find(&transactions)
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"message": "Success get all transactions",
+// 		"data":    transactions,
+// 	})
+// }
+
+func (ControllerCollection) GetAllTransaction(c *gin.Context) {
+	var transactionDetails []models.TransactionDetail
+
+	if err := models.DB.Preload("Transaction").Find(&transactionDetails).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "Fail to get transaction detail",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Success get all transaction",
+		"data":    transactionDetails,
+	})
+}
+
+func (ControllerCollection) GetTransactionByID(c *gin.Context) {
+	var transactionDetail models.TransactionDetail
+	id := c.Param("id")
+
+	if err := models.DB.Preload("Transaction").Find(&transactionDetail, id).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
+			"message": "Fail to find transaction data",
+			"error":   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Success get transaction from ID:",
+		"data":    transactionDetail,
+	})
+}
+
+// func (ControllerCollection) UpdateTransaction(c *gin.Context) {
+// 	var transactionDetail models.TransactionDetail
+// 	var transaction models.Transaction
+
+// 	id:=c.Param("id")
+// 	id:=c.BindJSON()
+
+// 	if err:=c.ShouldBindJSON(transactionDetail).Error; err != nil{
+
+// 	}
 // }

@@ -1,9 +1,20 @@
 package routes
 
-// import (
-// 	"golang-wm-api/controllers"
-// 	"github.com/gin-gonic/gin"
-// )
+import (
+	"golang-wm-api/middleware"
+
+	"github.com/gin-gonic/gin"
+)
+
+// type ProductRoutes struct{}
+
+func (RoutesCollection) ProductRoutes(r *gin.RouterGroup) {
+	r.GET("/products", CC.GetProducts)
+	r.GET("/product/:id", CC.GetProductById)
+	r.POST("/product", middleware.AdminAuth(), CC.CreateProduct)
+	r.PUT("/product/:id", middleware.AdminAuth(), CC.UpdateProduct)
+	r.DELETE("/product", middleware.AdminAuth(), CC.DeleteProduct)
+}
 
 // func ProductRouter() *gin.Engine {
 // 	cPC := controllers.ProductControllers{}

@@ -3,6 +3,8 @@ package models
 import (
 	// "time"
 
+	// "fmt"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
@@ -14,7 +16,8 @@ var DB *gorm.DB
 
 func ConnectDatabase() {
 	uri := os.Getenv("DB_URI")
-	db, err := gorm.Open(postgres.Open(uri), &gorm.Config{AllowGlobalUpdate: true}, &gorm.Config{TranslateError: true})
+	// fmt.Println(uri)
+	db, err := gorm.Open(postgres.Open(uri), &gorm.Config{})
 	if err != nil {
 		log.Fatalln(err)
 		os.Exit(1)

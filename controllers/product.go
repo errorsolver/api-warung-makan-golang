@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"golang-wm-api/models"
@@ -33,7 +34,10 @@ func (ControllerCollection) GetProductById(c *gin.Context) {
 			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "Data not found"})
 			return
 		default:
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"message": "Server error",
+				"error":   err.Error(),
+			})
 			return
 		}
 	}
@@ -70,9 +74,16 @@ func (ControllerCollection) UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	if models.DB.Model(&product).Where("id =  ?", id).Updates(&product).RowsAffected == 0 {
+	if models.DB.Model(&product).Where("id", id).Updates(&product).RowsAffected == 0 {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Fail update data"})
 		return
+	}
+
+	if err := models.DB.First(&product, id).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"message": "Product output error",
+			"error":   err.Error(),
+		})
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -95,10 +106,19 @@ func (ControllerCollection) DeleteProduct(c *gin.Context) {
 	}
 
 	id, _ := userInput.Id.Int64()
-	if models.DB.Delete(&product, id).RowsAffected == 0 {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Fail delete data"})
+	if err := models.DB.Delete(&product, id).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "Fail delete data",
+			"error":   err.Error(),
+		})
 		return
 	}
+	// if models.DB.Delete(&product, id).RowsAffected == 0 {
+	// 	c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Fail delete data"})
+	// 	return
+	// }
 
-	c.JSON(http.StatusOK, gin.H{"message": "Success delete data"})
+	c.JSON(http.StatusOK, gin.H{
+		"message": fmt.Sprintf("success delete user: %s", product.ProductName),
+	})
 }

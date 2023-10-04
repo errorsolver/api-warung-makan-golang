@@ -1,12 +1,8 @@
 package main
 
 import (
-	"log"
-
 	"golang-wm-api/models"
 	"golang-wm-api/routes"
-
-	// "github.com/gin-gonic/gin"
 
 	"github.com/joho/godotenv"
 
@@ -14,14 +10,17 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Fail load file .env")
+	envErr := godotenv.Load()
+	if envErr != nil {
+		panic("Fail load file .env")
 	}
 
-	r := routes.RouterCollection()
+	r := routes.RoutesGroup()
 
 	models.ConnectDatabase()
 
-	r.Run(os.Getenv("HOST"))
+	runErr := r.Run(os.Getenv("HOST"))
+	if runErr != nil {
+		panic(runErr)
+	}
 }

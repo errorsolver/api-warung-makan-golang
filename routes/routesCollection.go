@@ -6,22 +6,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RouterCollection() *gin.Engine {
-	cC := controllers.ControllerCollection{}
+type RoutesCollection struct{}
 
+var CC = controllers.ControllerCollection{}
+
+func RoutesGroup() *gin.Engine {
 	r := gin.Default()
 
-	r.GET("/products", cC.GetProducts)
-	r.GET("/product/:id", cC.GetProductById)
-	r.POST("/product", cC.CreateProduct)
-	r.PUT("/product/:id", cC.UpdateProduct)
-	r.DELETE("/product", cC.DeleteProduct)
+	api_v1 := r.Group("/api/v1")
+	routesCollection := RoutesCollection{}
 
-	r.GET("/user", cC.GetUsers)
-	r.POST("/user", cC.CreateUser)
-
-	r.GET("/transaction", cC.GetTransactionDetails)
-	r.POST("/transaction", cC.CreateTransactionDetails)
+	routesCollection.AdminRoutes(api_v1)
+	routesCollection.AdminRoutes(api_v1)
+	routesCollection.UserRoutes(api_v1)
+	routesCollection.ProductRoutes(api_v1)
+	routesCollection.TransactionRoutes(api_v1)
 
 	return r
 }

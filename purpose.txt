@@ -2,19 +2,18 @@
 
 # FUNCTION
 * User
-- Create User
+- Create User OK
 - Delete User
-- Detail User
+- Detail User OK
 
 * Product
-- Create Product
+- Create Product OK
 - Delete Product
-- Detail Product
+- Detail Product OK
 
 * Transaction
-- Create Transaction
-- Delete Transaction
-- Detail Transaction
+- Create Transaction OK
+- Detail Transaction OK
 
 * Transaction Detail
 - daily report
@@ -22,11 +21,39 @@
 - all report
 
 # TABLE
+* User
+- Id
+- Create
+- Update
+- Delete
+- Username
+- Password
+- TransactionDetail[]
+
 * Product
 - Id
+- Create
+- Update
+- Delete
 - Product Name
 - Price
+- TransactionDetail[]
+
+* TransactionDetail
+- Id
+- UserID
+- ProductID
+- Amount
+- Transaction[]
 
 * Transaction
 - Id
-- Table Name
+- Create
+- Update
+- Delete
+- TotalPrice
+
+# Test
+- Create User
+= Success =>
+    message: "Success create user"
